@@ -1,0 +1,216 @@
+---
+title: "Quantitative Analysis of Economic Innovation and Fertility Decline in South Korea: A Statistical Approach to Demographic Trends"
+author: "Chorok Kang"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    citation_package: biblatex
+fontsize: 12pt
+header-includes:
+  - \usepackage{setspace}
+  - \doublespacing
+bibliography: references.bib  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+```
+
+## Abstract
+
+This paper explores South Korea's low fertility rates amid its high Global Innovation Index ranking from 2013 to 2022. Using advanced statistical methods and data from KOSIS [@kosis2015; @kosis2017], the Global Innovation Index, and Kaggle [@kagglebirthrate], it examines socioeconomic factors' impact on fertility decisions. Despite economic growth, South Korea's fertility rates have dropped to 0.78 by 2022, attributed to urbanization, cost of living pressures, and changing social norms. Comparative analysis with Japan, Singapore, and Nordic countries highlights policy responses. Through structural equation modeling and latent growth modeling, the study identifies drivers of fertility trends and proposes nuanced policy measures for demographic stability, offering insights for policymakers and scholars.
+
+## Introduction
+
+South Korea presents a compelling dichotomy: despite its remarkable achievements in technology and innovation, evidenced by its consistent high ranking on the Global Innovation Index, the nation grapples with a profound challenge - a persistently declining fertility rate since 2013, now among the lowest globally. This demographic trend extends beyond individual health outcomes, significantly impacting national economic strategies and societal structures, raising concerns about long-term demographic sustainability.
+
+The genesis of this demographic decline can be traced to the post-Korean War era when South Korea enacted stringent economic and family planning policies during the 1960s. While these measures spurred economic growth, they also precipitated a pronounced and ongoing reduction in fertility rates. Despite extensive governmental efforts, including various incentives and policy initiatives, the trajectory of declining fertility rates persists, signaling a complex interplay of economic, cultural, and policy factors [@tamu2023].
+
+This study endeavors to dissect the multifaceted determinants underlying South Korea's fertility decline, juxtaposed with similar challenges faced by other nations. Comparative analyses with countries like Japan, Singapore, and Nordic nations, such as Sweden, offer insights into varying policy responses and outcomes. Employing sophisticated statistical methodologies, including multiple linear regression and structural equation modeling, the study seeks to elucidate the nexus of societal norms, economic dynamics, and policy interventions shaping fertility decisions.
+
+## Methods
+
+### Data Collection
+
+**Data Source**: The primary data utilized in this thesis is sourced from a comprehensive Kaggle dataset focusing on global fertility rates [@kagglebirthrate]. This dataset provides detailed annual fertility rates for multiple countries from 1960 to 2023.
+
+```{r}
+fertrate <-read.csv("/Users/bellakang/Downloads/fertility_rate (1).csv")
+```
+
+### Global Fertility Trends and Policy Responses
+
+![](Global Fertility Rate.png)
+
+All in all, the fertility rate has decreased significantly over the past 60 years.
+
+While South Korea stands out for its exceptionally low fertility rates, other nations have faced similar demographic challenges, albeit with varying degrees of success in addressing them. Countries like Japan and Singapore have also experienced significant declines in fertility rates, attributed to urbanization, economic pressures, and shifting societal norms. In contrast, nations such as Sweden and France have managed to stabilize or even reverse declining fertility trends through comprehensive family support policies[@kosis2015; @kosis2017]..
+
+-   **Japan**
+
+    -   Japan has implemented various measures like government-subsidized childcare and parental leave policies. However, despite these efforts, the fertility rates have not significantly improved, suggesting that deeper cultural and economic barriers still exist.
+
+-   **Singapore**
+
+    -   Singapore's approach includes financial incentives, extensive parental leave, and campaigns to shift societal norms regarding marriage and parenthood, showcasing a proactive government stance in managing demographic challenges.
+
+-   **Nordic Countries**
+
+    -   Nordic countries offer generous parental leave and childcare support, promoting gender equality in parenting. These measures have supported not only stable fertility rates but also strong female workforce participation, contributing to overall economic stability.
+
+These international examples provide a backdrop against which South Korea's policies can be evaluated. Understanding the successes and limitations of these countries in managing fertility rates can offer valuable lessons for South Korea.
+
+```{r}
+library(ggplot2)
+
+fertility_data <- 
+  read.csv("/Users/bellakang/Downloads/South_Korea_Fertility_Rate.csv")
+
+ggplot(fertility_data, aes(x = Year, y = Total_Fertility_Rate)) +
+  geom_line(color = "orange", linewidth = 1) + 
+  geom_point(color = "blue", linewidth = 2) +  
+  theme_minimal() +  
+  labs(title = "Total Fertility Rate in South Korea from 2013 to 2022",
+       x = "Year",
+       y = "Total Fertility Rate") +
+  theme(text = element_text(size = 12))
+```
+
+The data for this study was sourced from the Korean Statistical Information Service (KOSIS) and the Global innovation Index.The dataset spans the years 2013 to 2022 and includes the fertility trends in South Korea. This period was chosen because it captures the recent dynamics in fertility patterns alongside significant developments in technological and economic fields in the country, which align with South Korea's performances in global innovation rankings.
+
+In South Korea, the persistently low birthrate represents a significant socioeconomic dilemma. The decline in the total fertility rate (TFR), which dropped to 0.92 in 2019, can be attributed to several factors including soaring housing costs, limited employment prospects for the youth, and lack of adequate support for new parents from both governmental and corporate sectors. Despite numerous initiatives over the past decade aimed at boosting the birthrate—such as subsidies for child-rearing costs, prioritizing public housing for larger families, funding for day care centers, and designated public transport seating for pregnant women—the country continues to struggle to increase its TFR.
+
+Over the last two decades, South Korea has consistently experienced some of the lowest rates of fertility and marriage globally. By 2022, it had the lowest total fertility rate in the world at 0.78, with the capital city, Seoul, recording an even lower rate of 0.57.
+
+#### Korea GDP Data Analysis
+
+```{r}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(stringr)
+
+data1 <- read_csv("/Users/bellakang/Documents/Economy data.csv")
+
+korea_data <- data1 %>%
+  filter(`Country Name` == "Korea, Rep.")
+
+
+korea_growth <- korea_data %>%
+  select(`Country Name`, matches("^(200[0-9]|201[0-9]|202[0-2])$")) %>%
+  pivot_longer(cols = -`Country Name`, names_to = "Year", values_to = "GDP")
+
+korea_growth$Year <- as.numeric(str_extract(korea_growth$Year, "\\d+"))
+
+print(sum(is.na(korea_growth$GDP)))  
+print(sum(is.na(korea_growth$Year)))
+
+print(korea_growth[is.na(korea_growth$GDP) | is.na(korea_growth$Year), ])
+
+gdp_plot <- ggplot(korea_growth, aes(x = Year, y = GDP)) +
+  geom_line(linewidth = 1.5) +
+  geom_point() +
+  scale_y_continuous(limits = range(korea_growth$GDP, na.rm = TRUE), oob = scales::rescale_none) +
+  labs(title = "Economic Growth of South Korea", x = "Year", y = "GDP in USD") +
+  theme_minimal()
+
+print(gdp_plot)
+```
+
+#### Linking Economic Growth to Fertility Rates:
+
+-   **Economic Prosperity and Fertility Decisions:** Typically, one might expect that economic prosperity would lead to higher fertility rates as people feel more financially secure to start and support larger families. However, the case of South Korea illustrates a phenomenon observed in many developed countries where increased economic growth correlates with lower fertility rates. This paradox can be attributed to several factors: Urbanization and Cost of Living: As economies grow and urbanize, the cost of living, especially in urban areas, tends to increase. In South Korea, housing and education costs are significant, which might deter younger generations from having more children.
+-   **Work-Life Balance:** With economic development often comes longer working hours and greater work pressures, particularly in a highly competitive job market like South Korea's. This environment can lead to delayed marriages and childbearing, contributing to lower fertility rates.
+-   **Changing Social Norms:** Economic growth often brings about shifts in social values and norms. In South Korea, there is an increasing focus on personal and professional development. Younger Koreans might prioritize career advancement and personal freedoms over traditional family roles.
+
+#### Examining Fertility Promotion Policies
+
+This study utilizes longitudinal data from 2014 to 2018 on the Total Fertility Rate(TFR) of 250 local governments in South Korea, provided by statistics Korea. This data is crucial for examining the trends in fertility rates across different regions and understanding the impact of local government policies on demographic changes.
+
+**Dependent Variables:**
+
+-   **Total Fertility Rate(TFR):** Represents the average number of children a woman is expected to have during her lifetime,serving as primary measure of fertility within the studied localities.
+-   **Independent Variable:** Fertility Promotion Policy Fertility promotion policies were categorized into cash, in-kind, vouchers, services, education, and public relations initiatives, as documented in the Ministry of Health and Welfare’s 2014 Local Government Birth Encouragement Policy Casebook.
+
+## Statistical Analysis and Model Implementation
+
+To comprehensively analyze South Korea's fertility rates and identify influential factors, this study employs a multifaceted statistical approach, integrating various models and methodologies.
+
+**Multiple Regression Analysis**
+
+A multiple regression analysis is conducted to elucidate the impact of independent variables, such as cash policies, in-kind support, and economic indicators like GDP growth, on the Total Fertility Rate (TFR) across different local governments in South Korea. The regression equation, exemplified below, facilitates understanding of the relationships between these variables:
+
+$$ TFR_{it} = \beta_0 + \beta_1 \times Childbirth Grants_{it} + \beta_2 \times Childcare Allowances_{it} + \beta_3 \times GDP_{it} + \epsilon_{it} $$
+
+Where $i$ indexes the local government and $t$ indexes the year. Prior to analysis, data transformation techniques are employed to ensure variables are appropriately scaled or transformed to meet regression assumptions.
+
+**Time Series Analysis**
+
+For examining temporal trends in fertility rates, time series analysis techniques such as ARIMA models are utilized. This facilitates identification of trends, cycles, and potential effects of interventions or economic changes over time. Key considerations include checking for stationarity, determining the order of differencing, and identifying significant lags for the AR and MA components.
+
+**Structural Equation Modeling (SEM)**
+
+Structural equation modeling (SEM) is employed to explore the complex interrelationships between various factors influencing fertility rates. Latent variables, constructed from observed variables such as GDP and policy measures, are incorporated into the model to test hypotheses about the direction and strength of relationships with TFR.
+
+**Comparative Analysis Across Countries**
+
+To compare fertility trends across countries and assess the effectiveness of policy interventions, panel data models are utilized. These models control for unobserved heterogeneity between countries and focus on the impact of time-varying variables like policy changes.
+
+**Model Implementation and Tools**
+
+The potential growth model serves as a cornerstone of the statistical analysis, enabling estimation of changes in fertility rates over time and assessment of the impact of various policies. Implemented using R, this approach offers rigorous statistical techniques for longitudinal data analysis. Model fit is evaluated using indices such as TLI, CFI, and RMSEA, ensuring the adequacy of the models to the data.
+
+**Integration with Data Analysis**
+
+This comprehensive statistical approach, integrating multiple models and methodologies, enhances our understanding of South Korea's fertility trends and the underlying determinants. By aligning statistical analyses with real-world data on fertility rates and policy measures, this study provides actionable insights for policymakers and researchers aiming to address demographic challenges effectively.
+
+## Results
+
+### Descriptive Statistics
+
+![](Table 1.png)
+
+The descriptive statistics show a consistent decline in South Korea's fertility rate from 2014 to 2018, decreasing from an average of 1.31 to 1.08. The range also contracted from 0.79-2.43 to 0.60-1.89, highlighting a deepening fertility crisis.
+
+Regarding birth promotion policies, cash policies were the most implemented (mean=1.91), while voucher policies were the least (mean=0.19). The variability in policy implementation suggests different levels of emphasis and possibly experimental approaches across regions.
+
+### Unconditional Model Analysis
+
+![](Table 2.png)\
+The Quadratic Function Change Model provided the best fit with a CFI of 0.949 and TLI of 0.915, indicating a strong model fit, and an RMSEA of 0.080, suggesting acceptable approximation error.
+
+![](Table 3.png)
+
+In contrast, the No-change and Linear Change Models demonstrated poor fit, underscoring the dynamic and accelerating nature of the fertility decline, best captured by the quadratic model. The initial fertility rate in 2014 was significantly high at 1.316 but showed an accelerating decline, with considerable variance indicating regional differences in fertility trends, likely influenced by local socioeconomic conditions and policy effectiveness.
+
+### Promotion Policies on Changes in Fertility Rate
+
+![](Table 4.png)
+
+The analysis revealed that only the in-kind policy had a significant positive effect on the initial fertility rate. Other policies, such as cash or educational programs, showed no significant immediate impact on fertility rates. This suggests that tangible, direct supports like in-kind aids are more effective in influencing fertility decisions, whereas other policy types may lack immediate impact.
+
+## Discussion
+
+**Interpretation of Results**
+
+The analysis of the unconditional and conditional models reveals that the Total Fertility Rate (TFR) in South Korea is not only declining but doing so at an accelerating rate. The effectiveness of fertility promotion policies is mixed, with in-kind policies proving beneficial at the initial stage, suggesting that tangible support during pregnancy and childbirth could be more impact than financial incentives.
+
+These results echo broader research indicating that financial incentives alone are insufficient to counteract the deeper societal and economic factors that deter higher fertility rates, such as career and education aspirations, and the high cost of living.
+
+**Policy Implications**
+
+The varying impacts of different fertility policies necessitate a reevaluation of existing strategies. The success of in-kind supports underscores the potential benefits of policies offering direct, immediate support to prospective parents, such as housing subsidies or comprehensive childcare services.
+
+The minimal impact of policies like cash incentives highlights the need for a comprehensive strategy that addresses the multifaceted factors influencing fertility decisions, including cultural norms and economic challenges.
+
+**Limitations and Future Research**
+
+This study, while revealing, is constrained by its reliance on quantitative data, which may overlook the nuanced effects of these policies. Future studies could enhance these findings with a mixed-methods approach that includes qualitative insights to better understand how these policies are received by the population. Investigating these policies' long-term effects and their impact across different demographics would also provide a more detailed picture of their efficacy.
+
+**Conclusion**
+
+This study indicates that while some fertility promotion policies are effective, their overall impact is limited by complex socio-economic and cultural dynamics. A holistic approach that goes beyond financial incentives to address the root causes of low fertility is crucial for more effective and sustainable solutions. Continued research and innovative policy-making are essential to address this challenge effectively, ensuring that interventions are culturally resonant and economically viable.
+
+## 
