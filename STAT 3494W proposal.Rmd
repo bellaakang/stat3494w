@@ -1,0 +1,38 @@
+---
+title: "Economic Innovation and Fertility Rates: A Paradox in South Korea"
+author: "Chorok Kang"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: 
+  pdf_document:
+    citation_package: natbib
+bibliography: references.bib
+---
+
+# Introduction
+
+South Korea stands at a crossroads of leading global innovation and experiencing the world's lowest birth rates. Despite securing the 10th rank in the Global Innovation Index 2023 [@GlobalInnovationIndex2023], the country faces unprecedented demographic challenges with record-low fertility rates. This study is propelled by the urgency to dissect the socioeconomic dynamics underlying this paradox, especially in light of significant governmental efforts to reverse the trend.
+
+# Specific Aims
+
+This investigation aims to dissect the impact of economic innovation on the fertility rates in South Korea, probing the critical question: "Why does South Korea, a global leader in innovation, grapple with persistently low birth rates?" Highlighting the essence of this inquiry is crucial, as it endeavors to unravel the complex interplay between economic advancement and demographic trends. The findings are poised to inform policy frameworks, aiming to reconcile South Korea's technological and economic milestones with sustainable demographic growth [@Lim2021].
+
+# Data Description
+
+Employing a dataset spanning from 2000 to 2023, this study will analyze annual birth rate figures against the backdrop of the Global Innovation Index scores, alongside pertinent economic indicators and governmental expenditure on fertility programs. Data will be meticulously sourced from the Korean Statistical Information Service (KOSIS) and the Global Innovation Index, ensuring a robust and reliable foundation for the ensuing analysis.
+
+# Research Design/Methods/Schedule
+
+A methodical approach through multiple linear regression analysis will facilitate a comprehensive exploration of how economic innovation influences fertility rates. This statistical method is instrumental for its efficacy in delineating the relationship between diverse economic variables and the dependent variable of fertility rates. The execution timeline spans six weeks, delineated as follows:
+
+- **Weeks 1-2:** Data compilation and preprocessing.
+- **Weeks 3-4:** Conducting regression analysis to derive preliminary insights.
+- **Weeks 5-6:** Critical review and consolidation of research findings.
+
+# Discussion
+
+Anticipated outcomes from this study include a nuanced understanding of the socioeconomic variables influencing fertility decisions in the context of an innovation-driven economy. The research aspires to challenge prevailing narratives and foster a constructive dialogue on devising multifaceted policy solutions to nurture demographic resilience alongside economic innovation.
+
+# Conclusion
+
+This proposal delineates a comprehensive framework to explore the intricate relationship between economic innovation and fertility rates in South Korea. By illuminating the underlying causes of this demographic dilemma, the study aims to spearhead strategic policy interventions that harmonize South Korea's technological achievements with demographic vitality, ensuring a balanced trajectory towards sustainable national development.
+
